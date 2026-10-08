@@ -1,0 +1,10 @@
+# Capturas e logs de testes no navegador
+.playwright-mcp/
+
+# Dependências e configurações locais
+node_modules/
+.vercel/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
