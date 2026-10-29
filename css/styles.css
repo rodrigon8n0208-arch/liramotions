@@ -849,21 +849,55 @@ section[id] {
   mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 60%, transparent);
 }
 
+/* Vitrine: destaque horizontal, linha de verticais, linha de horizontais */
 .work__grid {
+  display: grid;
+  gap: 12px;
+}
+
+/* Verticais (9:16): 2 por linha no celular, os 5 lado a lado no computador */
+.work__verticals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-@media (min-width: 640px) {
-  .work__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+/* No celular, o 5º vertical fica centralizado na última linha */
+.work__verticals > .work-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 5px);
+}
+
+@media (min-width: 760px) {
+  .work__verticals {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px;
+  }
+
+  .work__verticals > .work-card:last-child:nth-child(odd) {
+    grid-column: auto;
+    justify-self: stretch;
+    width: auto;
+  }
+}
+
+/* Horizontais (16:9): um embaixo do outro no celular, lado a lado depois */
+.work__wides {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .work__wides {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .work__grid {
+  .work__grid,
+  .work__verticals,
+  .work__wides {
     gap: 14px;
   }
 }
@@ -926,7 +960,7 @@ section[id] {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(to top, rgba(2, 12, 8, 0.9), rgba(2, 12, 8, 0.25) 42%, transparent 70%);
+    linear-gradient(to top, rgba(2, 12, 8, 0.96) 0%, rgba(2, 12, 8, 0.88) 26%, rgba(2, 12, 8, 0.35) 50%, transparent 72%);
 }
 
 /* Luz esverdeada que segue o cursor (--mx / --my via JS) */
@@ -963,6 +997,29 @@ section[id] {
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--green-soft);
+}
+
+/* Descrição curta do trabalho (no máximo 2 linhas) */
+.work-card__desc {
+  display: -webkit-box;
+  margin-top: 3px;
+  overflow: hidden;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.74);
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.work-card--wide .work-card__desc {
+  max-width: 52ch;
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+}
+
+/* Cards horizontais da última linha */
+.work-card--h .work-card__media {
+  aspect-ratio: 16 / 9;
 }
 
 .work-card__title {
@@ -1129,192 +1186,6 @@ section[id] {
 .marquee--outline .marquee__spark svg {
   color: var(--green-soft);
   opacity: 0.7;
-}
-
-/* ------------------------------------------------------------
-   9b. SERVIÇOS EM DETALHE — Instagram, eventos, empresas
-   ------------------------------------------------------------ */
-.category {
-  padding-bottom: clamp(80px, 14vh, 150px);
-}
-
-.category__inner {
-  display: grid;
-  gap: clamp(24px, 4vw, 40px);
-}
-
-.category__desc {
-  max-width: 44ch;
-  margin-top: 16px;
-  font-size: clamp(1rem, 1.6vw, 1.08rem);
-  color: var(--text-2);
-  text-wrap: pretty;
-}
-
-.category__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-  list-style: none;
-}
-
-.category__tags li {
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--green-soft);
-  background: rgba(46, 229, 157, 0.08);
-  border: 1px solid rgba(46, 229, 157, 0.2);
-}
-
-.category__btn {
-  margin-top: 28px;
-}
-
-/* Celular: carrossel de arrastar, com o próximo card aparecendo na borda */
-.category__cards {
-  position: relative;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min(64%, 260px);
-  gap: 10px;
-  margin-inline: calc(var(--gutter) * -1);
-  padding: 4px var(--gutter) 8px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--gutter);
-  scrollbar-width: none;
-}
-
-.category__cards::-webkit-scrollbar {
-  display: none;
-}
-
-.category__cards .work-card {
-  scroll-snap-align: start;
-}
-
-/* Arrastando com o mouse: sem "ímã" e sem selecionar texto */
-.category__cards.is-dragging {
-  scroll-snap-type: none;
-  cursor: grabbing;
-  user-select: none;
-}
-
-/* Setas e pontinhos do carrossel (só no celular) */
-.carousel-ui {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 14px;
-}
-
-.carousel-ui__btn {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  flex: none;
-  border-radius: 50%;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--glass-border);
-  transition: background-color var(--speed) var(--ease), opacity var(--speed) var(--ease), transform var(--press) var(--ease);
-}
-
-.carousel-ui__btn svg {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.carousel-ui__btn:active {
-  transform: scale(0.94);
-}
-
-.carousel-ui__btn:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.carousel-ui__dots {
-  display: flex;
-  align-items: center;
-}
-
-/* área de toque de 24px, ponto visível pequeno */
-.carousel-ui__dot {
-  position: relative;
-  width: 24px;
-  height: 24px;
-}
-
-.carousel-ui__dot::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
-  transition: width var(--speed) var(--ease), margin var(--speed) var(--ease), background-color var(--speed) var(--ease);
-}
-
-.carousel-ui__dot.is-active::after {
-  width: 20px;
-  margin-left: -10px;
-  background: var(--green);
-}
-
-@media (min-width: 640px) {
-  .carousel-ui {
-    display: none;
-  }
-}
-
-@media (max-width: 639px) {
-  .category__cards {
-    cursor: grab;
-  }
-}
-
-@media (min-width: 640px) {
-  .category__cards {
-    grid-auto-flow: row;
-    grid-auto-columns: auto;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-inline: 0;
-    padding: 0;
-    overflow: visible;
-  }
-}
-
-/* Computador: texto de um lado, vídeos do outro, alternando */
-@media (min-width: 960px) {
-  .category__inner {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    align-items: center;
-    gap: clamp(40px, 5vw, 72px);
-  }
-
-  .category--reverse .category__inner {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  }
-
-  .category--reverse .category__text {
-    order: 2;
-  }
 }
 
 /* ------------------------------------------------------------

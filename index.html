@@ -10,7 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="liramotions | Edição de vídeo e motion design">
   <meta property="og:description" content="Vídeos com ritmo, cor e movimento para criadores, marcas e empresas.">
-  <meta property="og:image" content="assets/img/featured.jpg">
+  <meta property="og:image" content="assets/img/videos/v1.jpg">
   <meta property="og:locale" content="pt_BR">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -112,15 +112,12 @@
   <div class="menu" id="menu" data-menu data-lenis-prevent>
     <nav class="menu__nav" aria-label="Menu">
       <a class="menu__link" href="#trabalhos" data-nav style="--i:0">Trabalhos</a>
-      <a class="menu__link" href="#instagram" data-nav style="--i:1">Vídeos para Instagram</a>
-      <a class="menu__link" href="#eventos" data-nav style="--i:2">Vídeos para eventos</a>
-      <a class="menu__link" href="#empresas" data-nav style="--i:3">Vídeos para empresas</a>
-      <a class="menu__link" href="#incluso" data-nav style="--i:4">O que está incluso</a>
-      <a class="menu__link" href="#processo" data-nav style="--i:5">Como funciona</a>
-      <a class="menu__link" href="#sobre" data-nav style="--i:6">Sobre</a>
-      <a class="menu__link" href="#duvidas" data-nav style="--i:7">Dúvidas</a>
+      <a class="menu__link" href="#incluso" data-nav style="--i:1">O que está incluso</a>
+      <a class="menu__link" href="#processo" data-nav style="--i:2">Como funciona</a>
+      <a class="menu__link" href="#sobre" data-nav style="--i:3">Sobre</a>
+      <a class="menu__link" href="#duvidas" data-nav style="--i:4">Dúvidas</a>
     </nav>
-    <div class="menu__foot" style="--i:8">
+    <div class="menu__foot" style="--i:5">
       <a class="btn-cta btn-cta--block" href="https://wa.me/558487389629?text=Ol%C3%A1!%20Vi%20o%20site%20da%20liramotions%20e%20quero%20conversar%20sobre%20um%20v%C3%ADdeo." target="_blank" rel="noopener">
         Chamar no WhatsApp
         <svg class="btn-cta__arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
@@ -205,118 +202,109 @@
           <p class="section-note" data-reveal>Toque em um vídeo para assistir.</p>
         </div>
 
+        <!--
+          VÍDEOS: cada card abre o vídeo do Google Drive em data-video.
+          Para trocar um vídeo, cole o link do Drive (compartilhado como
+          "Qualquer pessoa com o link") e troque a capa em assets/img/videos/.
+          data-format="vertical" abre em pé (9:16); "wide" abre deitado (16:9).
+        -->
         <div class="work__grid" data-grid>
-          <!--
-            COMO COLOCAR OS VÍDEOS (vale para todos os cards do site):
-            1. No Google Drive, clique com o botão direito no vídeo > Compartilhar >
-               "Qualquer pessoa com o link" pode ver. Copie o link.
-            2. Cole o link dentro de data-video="" do card. Exemplo:
-               data-video="https://drive.google.com/file/d/1AbC.../view?usp=sharing"
-            3. Capa do card: troque o src da <img>, ou escreva data-poster="drive"
-               no <button> para usar a miniatura que o próprio Drive gera.
-            Também aceita links do YouTube (inclusive Shorts), Vimeo e arquivos .mp4.
-            data-format="vertical" abre o player em pé (9:16); "wide" abre deitado (16:9).
-          -->
           <article class="work-card work-card--wide" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="wide" aria-label="Assistir: Filme de marca Estúdio Aurora">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1ZyNOdrS2qHCcrWMkn62S4t4g3K2fAf3J/view" data-format="wide" aria-label="Assistir: Vídeo de vendas com especialista">
               <span class="work-card__parallax" data-parallax>
-                <img src="assets/img/featured.jpg" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
+                <img src="assets/img/videos/v1.jpg" alt="" width="1280" height="720" fetchpriority="high" decoding="async">
               </span>
               <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
               <span class="work-card__info">
-                <span class="work-card__cat">Institucional</span>
-                <span class="work-card__title">Filme de marca Estúdio Aurora</span>
+                <span class="work-card__cat">VSL</span>
+                <span class="work-card__title">Vídeo de vendas com especialista</span>
+                <span class="work-card__desc">Entrevista em estúdio com cortes dinâmicos e legendas que seguram a atenção do começo ao fim.</span>
               </span>
             </button>
           </article>
 
+          <div class="work__verticals">
           <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Bastidores de gravação">
-              <img src="assets/img/work-1.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1DzZ2Q8u8Nz1x1JEJEfthxqq_q75jhAvA/view" data-format="vertical" aria-label="Assistir: Anúncio para hamburgueria">
+              <img src="assets/img/videos/v2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
+              <span class="work-card__info">
+                <span class="work-card__cat">Criativo de campanha</span>
+                <span class="work-card__title">Anúncio para hamburgueria</span>
+                <span class="work-card__desc">Close no produto, texto na tela e ritmo rápido para vender no feed.</span>
+              </span>
+            </button>
+          </article>
+          <article class="work-card" data-reveal="card">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1gDpbUCpNb0_ocJv6suZcoqkEUu1O2T8g/view" data-format="vertical" aria-label="Assistir: Fábio, vídeo para o Instagram">
+              <img src="assets/img/videos/v3.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
+              <span class="work-card__info">
+                <span class="work-card__cat">Conteúdo de autoridade</span>
+                <span class="work-card__title">Fábio, vídeo para o Instagram</span>
+                <span class="work-card__desc">Fala direta para a câmera com legenda dinâmica no ritmo da fala.</span>
+              </span>
+            </button>
+          </article>
+          <article class="work-card" data-reveal="card">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1ensRsvXi9ys8xlo8D5nDPvvjRE5rjAI3/view" data-format="vertical" aria-label="Assistir: Anúncio para donos de negócio">
+              <img src="assets/img/videos/v4.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
+              <span class="work-card__info">
+                <span class="work-card__cat">Criativo de campanha</span>
+                <span class="work-card__title">Anúncio para donos de negócio</span>
+                <span class="work-card__desc">Gancho forte nos primeiros segundos e legenda em destaque.</span>
+              </span>
+            </button>
+          </article>
+          <article class="work-card" data-reveal="card">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1FIY3VUnyej9wnAb44uvFTOQ1FEiawccP/view" data-format="vertical" aria-label="Assistir: Reels para o mercado imobiliário">
+              <img src="assets/img/videos/v5.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
               <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
               <span class="work-card__info">
                 <span class="work-card__cat">Reels</span>
-                <span class="work-card__title">Bastidores de gravação</span>
+                <span class="work-card__title">Reels para o mercado imobiliário</span>
+                <span class="work-card__desc">Imagens aéreas, legenda e a marca do corretor em cada cena.</span>
               </span>
             </button>
           </article>
-
           <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Aftermovie de show ao vivo">
-              <img src="assets/img/work-2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Eventos</span>
-                <span class="work-card__title">Aftermovie de show ao vivo</span>
-              </span>
-            </button>
-          </article>
-
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Apresentação de criador">
-              <img src="assets/img/work-3.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1aZcD04OfbcyEotLyCU1ZGNIGDZ2AnWM9/view" data-format="vertical" aria-label="Assistir: Fábio, conteúdo sobre bancos">
+              <img src="assets/img/videos/v8.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
               <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
               <span class="work-card__info">
                 <span class="work-card__cat">Reels</span>
-                <span class="work-card__title">Apresentação de criador</span>
+                <span class="work-card__title">Fábio, conteúdo sobre bancos</span>
+                <span class="work-card__desc">Transições com efeito, cor e legenda para prender quem está no feed.</span>
               </span>
             </button>
           </article>
+          </div>
 
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Lançamento de produto">
-              <img src="assets/img/work-4.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+          <div class="work__wides">
+          <article class="work-card work-card--h" data-reveal="card">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/1U3updwysiKqSjF-JqbsG0olphpsHB4z2/view" data-format="wide" aria-label="Assistir: Apresentação animada do SnipHUB">
+              <img src="assets/img/videos/v6.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
               <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
               <span class="work-card__info">
-                <span class="work-card__cat">Anúncio</span>
-                <span class="work-card__title">Lançamento de produto</span>
+                <span class="work-card__cat">Motion SaaS</span>
+                <span class="work-card__title">Apresentação animada do SnipHUB</span>
+                <span class="work-card__desc">A interface do produto em 3D, com tipografia animada e transições suaves.</span>
               </span>
             </button>
           </article>
-
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Cortes de podcast">
-              <img src="assets/img/work-5.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
+          <article class="work-card work-card--h" data-reveal="card">
+            <button class="work-card__media" type="button" data-video="https://drive.google.com/file/d/10r-PqWGZwKw8Gc4o1dgAyEXIKRW6TgIW/view" data-format="wide" aria-label="Assistir: Explicação animada de pagamentos">
+              <img src="assets/img/videos/v7.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
               <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
               <span class="work-card__info">
-                <span class="work-card__cat">YouTube</span>
-                <span class="work-card__title">Cortes de podcast</span>
+                <span class="work-card__cat">Motion SaaS</span>
+                <span class="work-card__title">Explicação animada de pagamentos</span>
+                <span class="work-card__desc">Ícones 3D e texto animado para explicar o produto em segundos.</span>
               </span>
             </button>
           </article>
-
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Festival de música">
-              <img src="assets/img/work-6.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Eventos</span>
-                <span class="work-card__title">Festival de música</span>
-              </span>
-            </button>
-          </article>
-
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Vinheta animada">
-              <img src="assets/img/work-7.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Motion design</span>
-                <span class="work-card__title">Vinheta animada</span>
-              </span>
-            </button>
-          </article>
-
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Videoclipe">
-              <img src="assets/img/work-8.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Clipe</span>
-                <span class="work-card__title">Videoclipe</span>
-              </span>
-            </button>
-          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -345,163 +333,6 @@
       </div>
     </section>
 
-    <!-- SERVIÇOS EM DETALHE: texto de um lado, vídeos do outro.
-         No celular, os vídeos viram um carrossel de arrastar. -->
-    <section class="category" id="instagram" aria-labelledby="instagram-title">
-      <div class="container category__inner">
-        <div class="category__text">
-          <h2 class="section-title" id="instagram-title" data-split>Vídeos para <em class="accent">Instagram</em></h2>
-          <p class="category__desc" data-reveal>Reels e stories com gancho nos primeiros segundos, legenda dinâmica e cortes no ritmo da música, feitos para segurar quem está rolando o feed.</p>
-          <ul class="category__tags" data-reveal aria-label="O que entra">
-            <li>Reels</li>
-            <li>Stories</li>
-            <li>Legendas animadas</li>
-            <li>Trends</li>
-          </ul>
-          <a class="btn btn--ghost category__btn" data-reveal href="https://wa.me/558487389629?text=Ol%C3%A1!%20Quero%20v%C3%ADdeos%20para%20Instagram." target="_blank" rel="noopener">
-            <svg class="btn__ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>
-            Quero vídeos para Instagram
-          </a>
-        </div>
-
-        <div class="category__cards">
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Reels de lançamento">
-              <img src="assets/img/insta-1.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Reels</span>
-                <span class="work-card__title">Reels de lançamento</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Trend com a marca">
-              <img src="assets/img/insta-2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Trend</span>
-                <span class="work-card__title">Trend com a marca</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Stories de bastidores">
-              <img src="assets/img/insta-3.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Stories</span>
-                <span class="work-card__title">Stories de bastidores</span>
-              </span>
-            </button>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="category category--reverse" id="eventos" aria-labelledby="eventos-title">
-      <div class="container category__inner">
-        <div class="category__text">
-          <h2 class="section-title" id="eventos-title" data-split>Vídeos para <em class="accent">eventos</em></h2>
-          <p class="category__desc" data-reveal>Aftermovies, teasers e destaques de shows, festas, casamentos e eventos corporativos, entregues enquanto o assunto ainda está quente.</p>
-          <ul class="category__tags" data-reveal aria-label="O que entra">
-            <li>Aftermovie</li>
-            <li>Teaser</li>
-            <li>Destaques</li>
-            <li>Casamentos</li>
-          </ul>
-          <a class="btn btn--ghost category__btn" data-reveal href="https://wa.me/558487389629?text=Ol%C3%A1!%20Quero%20um%20v%C3%ADdeo%20para%20o%20meu%20evento." target="_blank" rel="noopener">
-            <svg class="btn__ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>
-            Quero um vídeo do meu evento
-          </a>
-        </div>
-
-        <div class="category__cards">
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Aftermovie Festival Sunset">
-              <img src="assets/img/eventos-1.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Aftermovie</span>
-                <span class="work-card__title">Festival Sunset</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Casamento no campo">
-              <img src="assets/img/eventos-2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Casamento</span>
-                <span class="work-card__title">Casamento no campo</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Festa de lançamento">
-              <img src="assets/img/eventos-3.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Teaser</span>
-                <span class="work-card__title">Festa de lançamento</span>
-              </span>
-            </button>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="category" id="empresas" aria-labelledby="empresas-title">
-      <div class="container category__inner">
-        <div class="category__text">
-          <h2 class="section-title" id="empresas-title" data-split>Vídeos para <em class="accent">empresas</em></h2>
-          <p class="category__desc" data-reveal>Institucionais, anúncios e depoimentos que explicam o que a sua empresa faz com clareza e com a cara da sua marca.</p>
-          <ul class="category__tags" data-reveal aria-label="O que entra">
-            <li>Institucional</li>
-            <li>Anúncios</li>
-            <li>Depoimentos</li>
-            <li>Treinamentos</li>
-          </ul>
-          <a class="btn btn--ghost category__btn" data-reveal href="https://wa.me/558487389629?text=Ol%C3%A1!%20Quero%20um%20v%C3%ADdeo%20para%20a%20minha%20empresa." target="_blank" rel="noopener">
-            <svg class="btn__ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>
-            Quero um vídeo para a empresa
-          </a>
-        </div>
-
-        <div class="category__cards">
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Coletiva de imprensa">
-              <img src="assets/img/empresas-1.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Institucional</span>
-                <span class="work-card__title">Coletiva de imprensa</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Depoimento de cliente">
-              <img src="assets/img/empresas-2.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Depoimento</span>
-                <span class="work-card__title">Depoimento de cliente</span>
-              </span>
-            </button>
-          </article>
-          <article class="work-card" data-reveal="card">
-            <button class="work-card__media" type="button" data-video="" data-format="vertical" aria-label="Assistir: Apresentação do fundador">
-              <img src="assets/img/empresas-3.jpg" alt="" width="720" height="1280" loading="lazy" decoding="async">
-              <span class="work-card__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-              <span class="work-card__info">
-                <span class="work-card__cat">Anúncio</span>
-                <span class="work-card__title">Apresentação do fundador</span>
-              </span>
-            </button>
-          </article>
-        </div>
-      </div>
-    </section>
 
     <!-- INCLUSO -->
     <section class="incluso" id="incluso" aria-labelledby="incluso-title">

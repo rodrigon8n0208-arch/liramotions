@@ -136,28 +136,11 @@
     }
   }
 
-  // Cards dentro de carrossel ficam fora da tela na horizontal: eles são
-  // revelados junto com o carrossel, senão só apareceriam depois de arrastar.
-  const carousels = $$(".category__cards");
-  const inCarousel = (el) => carousels.some((c) => c.contains(el));
-  const revealTargets = [...sectionTitles, ...$$("[data-reveal]").filter((el) => !inCarousel(el))];
+  const revealTargets = [...sectionTitles, ...$$("[data-reveal]")];
 
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealTargets.forEach((el) => reveal(el, 0));
-    carousels.forEach((c) => $$("[data-reveal]", c).forEach((el) => reveal(el, 0)));
   } else {
-    const carouselIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          carouselIO.unobserve(entry.target);
-          $$("[data-reveal]", entry.target).forEach((el, i) => reveal(el, i * 110));
-        });
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
-    );
-    carousels.forEach((c) => carouselIO.observe(c));
-
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -407,111 +390,6 @@
   window.addEventListener("load", onResize);
   measureSteps();
   requestAnimationFrame(tick);
-
-  /* ---------- 5b. Carrosséis do celular ---------- */
-  // No celular, cada seção de serviço vira um carrossel: dedo, mouse
-  // (arrastar), setas e pontinhos. No computador os controles somem.
-
-  const carouselQuery = window.matchMedia("(max-width: 639px)");
-
-  function setupCarousel(track) {
-    const cards = $$(".work-card", track);
-    if (cards.length < 2) return;
-
-    // o Lenis não deve interferir no arraste lateral
-    track.setAttribute("data-lenis-prevent-touch", "");
-
-    const ui = document.createElement("div");
-    ui.className = "carousel-ui";
-    ui.innerHTML = `
-      <button class="carousel-ui__btn" type="button" data-dir="-1" aria-label="Vídeo anterior">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <div class="carousel-ui__dots" role="tablist" aria-label="Escolher vídeo"></div>
-      <button class="carousel-ui__btn" type="button" data-dir="1" aria-label="Próximo vídeo">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </button>`;
-    track.after(ui);
-
-    const dotsWrap = $(".carousel-ui__dots", ui);
-    const dots = cards.map((card, i) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "carousel-ui__dot";
-      dot.setAttribute("role", "tab");
-      dot.setAttribute("aria-label", `Vídeo ${i + 1} de ${cards.length}`);
-      dot.addEventListener("click", () => goTo(i));
-      dotsWrap.appendChild(dot);
-      return dot;
-    });
-    const [prevBtn, nextBtn] = $$(".carousel-ui__btn", ui);
-
-    const padLeft = () => parseFloat(getComputedStyle(track).paddingLeft) || 0;
-
-    function current() {
-      // no fim da rolagem o último card não chega ao começo: conta como último
-      if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) return cards.length - 1;
-      const x = track.scrollLeft + padLeft();
-      let best = 0;
-      let bestDist = Infinity;
-      cards.forEach((card, i) => {
-        const d = Math.abs(card.offsetLeft - x);
-        if (d < bestDist) { bestDist = d; best = i; }
-      });
-      return best;
-    }
-
-    function goTo(i) {
-      const idx = clamp(i, 0, cards.length - 1);
-      track.scrollTo({ left: cards[idx].offsetLeft - padLeft(), behavior: reduceMotion ? "auto" : "smooth" });
-    }
-
-    function update() {
-      const i = current();
-      dots.forEach((d, k) => {
-        d.classList.toggle("is-active", k === i);
-        d.setAttribute("aria-selected", String(k === i));
-      });
-      const max = track.scrollWidth - track.clientWidth - 2;
-      prevBtn.disabled = track.scrollLeft <= 2;
-      nextBtn.disabled = track.scrollLeft >= max;
-    }
-
-    prevBtn.addEventListener("click", () => goTo(current() - 1));
-    nextBtn.addEventListener("click", () => goTo(current() + 1));
-    track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
-
-    // Arrastar com o mouse (o dedo já rola nativamente)
-    let drag = null;
-    track.addEventListener("pointerdown", (e) => {
-      if (e.pointerType !== "mouse" || !carouselQuery.matches) return;
-      drag = { x: e.clientX, left: track.scrollLeft, moved: false };
-      track.classList.add("is-dragging");
-    });
-    window.addEventListener("pointermove", (e) => {
-      if (!drag) return;
-      const dx = e.clientX - drag.x;
-      if (Math.abs(dx) > 4) drag.moved = true;
-      track.scrollLeft = drag.left - dx;
-    });
-    window.addEventListener("pointerup", () => {
-      if (!drag) return;
-      const moved = drag.moved;
-      drag = null;
-      track.classList.remove("is-dragging");
-      goTo(current());
-      // um arraste não deve abrir o vídeo
-      if (moved) {
-        const block = (ev) => { ev.preventDefault(); ev.stopPropagation(); };
-        track.addEventListener("click", block, { capture: true });
-        setTimeout(() => track.removeEventListener("click", block, { capture: true }), 0);
-      }
-    });
-
-    update();
-  }
-
-  $$(".category__cards").forEach(setupCarousel);
 
   /* ---------- 6. Luz que segue o cursor nos cards ---------- */
 
