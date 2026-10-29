@@ -459,7 +459,7 @@
         if (id) return { type: "iframe", src: `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&dnt=1` };
       }
       const driveId = getDriveId(url);
-      if (driveId) return { type: "iframe", src: `https://drive.google.com/file/d/${driveId}/preview` };
+      if (driveId) return { type: "drive", id: driveId };
       if (/\.(mp4|webm|mov|m4v)$/i.test(u.pathname)) return { type: "video", src: u.href };
     } catch (err) {
       /* link inválido: cai na capa */
@@ -479,20 +479,46 @@
     catEl.textContent = cat;
     media.textContent = "";
 
-    if (source && source.type === "iframe") {
+    media.classList.remove("is-loading");
+
+    const addFrame = (src) => {
+      media.textContent = "";
+      media.classList.remove("is-loading");
       const frame = document.createElement("iframe");
-      frame.src = source.src;
+      frame.src = src;
       frame.title = title;
       frame.allow = "autoplay; fullscreen; picture-in-picture; encrypted-media";
       media.appendChild(frame);
-    } else if (source && source.type === "video") {
+    };
+
+    // Vídeo tocando no player do próprio site: começa sozinho ao abrir.
+    // O clique no card conta como gesto da pessoa, então o som é liberado.
+    const addVideo = (src, onFail) => {
       const video = document.createElement("video");
-      video.src = source.src;
+      video.src = src;
       video.poster = poster;
       video.controls = true;
       video.autoplay = true;
       video.playsInline = true;
+      video.preload = "auto";
+      media.classList.add("is-loading");
+      video.addEventListener("playing", () => media.classList.remove("is-loading"));
+      video.addEventListener("waiting", () => media.classList.add("is-loading"));
+      if (onFail) video.addEventListener("error", onFail, { once: true });
       media.appendChild(video);
+      const p = video.play();
+      // Se o navegador recusar som automático, toca sem som (a pessoa liga depois)
+      if (p && p.catch) p.catch(() => { video.muted = true; video.play().catch(() => {}); });
+    };
+
+    if (source && source.type === "drive") {
+      // O Drive não deixa tocar o arquivo direto em outro site, então usa o
+      // player dele (que exige um toque no play). YouTube e .mp4 começam sozinhos.
+      addFrame(`https://drive.google.com/file/d/${source.id}/preview`);
+    } else if (source && source.type === "iframe") {
+      addFrame(source.src);
+    } else if (source && source.type === "video") {
+      addVideo(source.src);
     } else {
       const cover = document.createElement("img");
       cover.src = poster;
