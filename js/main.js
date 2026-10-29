@@ -18,22 +18,48 @@
 
   /* ---------- 1. Títulos divididos em palavras ---------- */
 
+  // Percorre o título mantendo os elementos internos (ex.: <em class="accent">)
+  // e embrulha cada palavra numa máscara. SVGs e [data-nosplit] passam intactos.
   function splitWords(el, startIndex = 0) {
-    const words = el.textContent.trim().split(/\s+/);
+    let index = startIndex;
+
+    function walk(source, target) {
+      Array.from(source.childNodes).forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              target.appendChild(document.createTextNode(" "));
+              return;
+            }
+            const outer = document.createElement("span");
+            outer.className = "w";
+            const inner = document.createElement("span");
+            inner.className = "w__i";
+            inner.textContent = part;
+            inner.style.setProperty("--i", index++);
+            outer.appendChild(inner);
+            target.appendChild(outer);
+          });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.namespaceURI !== "http://www.w3.org/1999/xhtml" || node.hasAttribute("data-nosplit")) {
+            target.appendChild(node);
+            return;
+          }
+          const copy = node.cloneNode(false);
+          walk(node, copy);
+          copy.classList.add("is-split");
+          target.appendChild(copy);
+        }
+      });
+    }
+
+    const frag = document.createDocumentFragment();
+    walk(el, frag);
     el.textContent = "";
-    words.forEach((word, i) => {
-      const outer = document.createElement("span");
-      outer.className = "w";
-      const inner = document.createElement("span");
-      inner.className = "w__i";
-      inner.textContent = word;
-      inner.style.setProperty("--i", startIndex + i);
-      outer.appendChild(inner);
-      el.appendChild(outer);
-      if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
-    });
+    el.appendChild(frag);
     el.classList.add("is-split");
-    return words.length;
+    return index - startIndex;
   }
 
   const heroTitle = $(".hero__title");
@@ -110,11 +136,28 @@
     }
   }
 
-  const revealTargets = [...sectionTitles, ...$$("[data-reveal]")];
+  // Cards dentro de carrossel ficam fora da tela na horizontal: eles são
+  // revelados junto com o carrossel, senão só apareceriam depois de arrastar.
+  const carousels = $$(".category__cards");
+  const inCarousel = (el) => carousels.some((c) => c.contains(el));
+  const revealTargets = [...sectionTitles, ...$$("[data-reveal]").filter((el) => !inCarousel(el))];
 
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealTargets.forEach((el) => reveal(el, 0));
+    carousels.forEach((c) => $$("[data-reveal]", c).forEach((el) => reveal(el, 0)));
   } else {
+    const carouselIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          carouselIO.unobserve(entry.target);
+          $$("[data-reveal]", entry.target).forEach((el, i) => reveal(el, i * 110));
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+    );
+    carousels.forEach((c) => carouselIO.observe(c));
+
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -212,8 +255,6 @@
   const parallaxEls = $$("[data-parallax]");
   const steps = $("[data-steps]");
   const stepItems = steps ? $$(".step", steps) : [];
-  const ctaTitle = $(".cta__title");
-  const ctaActions = $(".cta__actions");
   const horizontalQuery = window.matchMedia("(min-width: 860px)");
 
   let vh = window.innerHeight;
@@ -313,32 +354,9 @@
     }
   }
 
-  // Partículas orbitam o bloco de contato conforme ele chega ao centro
-  function updateAttractor() {
-    const particles = window.liraParticles;
-    if (!particles || !ctaTitle || !ctaActions) return;
-    const a = ctaTitle.getBoundingClientRect();
-    const b = ctaActions.getBoundingClientRect();
-    if (b.bottom < 0 || a.top > vh) {
-      particles.attractor = null;
-      return;
-    }
-    const left = Math.min(a.left, b.left);
-    const right = Math.max(a.right, b.right);
-    const top = a.top;
-    const bottom = b.bottom;
-    const cy = (top + bottom) / 2;
-    const centered = 1 - clamp(Math.abs(cy - vh / 2) / (vh * 0.6), 0, 1);
-    particles.attractor = {
-      x: (left + right) / 2,
-      y: cy,
-      rx: (right - left) / 2 + 60,
-      ry: (bottom - top) / 2 + 60,
-      strength: centered * centered,
-    };
-  }
-
   let isScrolled = false;
+  let isFloatVisible = false;
+  const waFloat = $("[data-wa-float]");
 
   function tick(time) {
     if (lenis) lenis.raf(time);
@@ -356,11 +374,17 @@
       topbar.classList.toggle("is-scrolled", scrolled);
     }
 
+    // Botão fixo do WhatsApp aparece depois que o hero sai da tela
+    const showFloat = y > heroH * 0.7;
+    if (waFloat && showFloat !== isFloatVisible) {
+      isFloatVisible = showFloat;
+      waFloat.classList.toggle("is-visible", showFloat);
+    }
+
     updateHero(y);
     updateParallax();
     updateMarquees();
     updateSteps();
-    updateAttractor();
 
     requestAnimationFrame(tick);
   }
@@ -383,6 +407,111 @@
   window.addEventListener("load", onResize);
   measureSteps();
   requestAnimationFrame(tick);
+
+  /* ---------- 5b. Carrosséis do celular ---------- */
+  // No celular, cada seção de serviço vira um carrossel: dedo, mouse
+  // (arrastar), setas e pontinhos. No computador os controles somem.
+
+  const carouselQuery = window.matchMedia("(max-width: 639px)");
+
+  function setupCarousel(track) {
+    const cards = $$(".work-card", track);
+    if (cards.length < 2) return;
+
+    // o Lenis não deve interferir no arraste lateral
+    track.setAttribute("data-lenis-prevent-touch", "");
+
+    const ui = document.createElement("div");
+    ui.className = "carousel-ui";
+    ui.innerHTML = `
+      <button class="carousel-ui__btn" type="button" data-dir="-1" aria-label="Vídeo anterior">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="carousel-ui__dots" role="tablist" aria-label="Escolher vídeo"></div>
+      <button class="carousel-ui__btn" type="button" data-dir="1" aria-label="Próximo vídeo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>`;
+    track.after(ui);
+
+    const dotsWrap = $(".carousel-ui__dots", ui);
+    const dots = cards.map((card, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "carousel-ui__dot";
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", `Vídeo ${i + 1} de ${cards.length}`);
+      dot.addEventListener("click", () => goTo(i));
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+    const [prevBtn, nextBtn] = $$(".carousel-ui__btn", ui);
+
+    const padLeft = () => parseFloat(getComputedStyle(track).paddingLeft) || 0;
+
+    function current() {
+      // no fim da rolagem o último card não chega ao começo: conta como último
+      if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) return cards.length - 1;
+      const x = track.scrollLeft + padLeft();
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const d = Math.abs(card.offsetLeft - x);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      return best;
+    }
+
+    function goTo(i) {
+      const idx = clamp(i, 0, cards.length - 1);
+      track.scrollTo({ left: cards[idx].offsetLeft - padLeft(), behavior: reduceMotion ? "auto" : "smooth" });
+    }
+
+    function update() {
+      const i = current();
+      dots.forEach((d, k) => {
+        d.classList.toggle("is-active", k === i);
+        d.setAttribute("aria-selected", String(k === i));
+      });
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prevBtn.disabled = track.scrollLeft <= 2;
+      nextBtn.disabled = track.scrollLeft >= max;
+    }
+
+    prevBtn.addEventListener("click", () => goTo(current() - 1));
+    nextBtn.addEventListener("click", () => goTo(current() + 1));
+    track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+
+    // Arrastar com o mouse (o dedo já rola nativamente)
+    let drag = null;
+    track.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || !carouselQuery.matches) return;
+      drag = { x: e.clientX, left: track.scrollLeft, moved: false };
+      track.classList.add("is-dragging");
+    });
+    window.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 4) drag.moved = true;
+      track.scrollLeft = drag.left - dx;
+    });
+    window.addEventListener("pointerup", () => {
+      if (!drag) return;
+      const moved = drag.moved;
+      drag = null;
+      track.classList.remove("is-dragging");
+      goTo(current());
+      // um arraste não deve abrir o vídeo
+      if (moved) {
+        const block = (ev) => { ev.preventDefault(); ev.stopPropagation(); };
+        track.addEventListener("click", block, { capture: true });
+        setTimeout(() => track.removeEventListener("click", block, { capture: true }), 0);
+      }
+    });
+
+    update();
+  }
+
+  $$(".category__cards").forEach(setupCarousel);
 
   /* ---------- 6. Luz que segue o cursor nos cards ---------- */
 
@@ -413,6 +542,26 @@
     src: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1`,
   });
 
+  // Google Drive: aceita /file/d/ID/view, open?id=ID, uc?id=ID e o link de download.
+  // O arquivo precisa estar compartilhado como "Qualquer pessoa com o link".
+  function getDriveId(url) {
+    try {
+      const u = new URL(url, location.href);
+      if (!/(^|\.)drive\.google\.com$|^drive\.usercontent\.google\.com$|^docs\.google\.com$/.test(u.hostname)) return null;
+      const m = u.pathname.match(/\/d\/([\w-]{10,})/);
+      return m ? m[1] : u.searchParams.get("id");
+    } catch (err) {
+      return null;
+    }
+  }
+
+  // Capa automática: data-poster="drive" usa a miniatura que o Drive gera
+  $$('.work-card__media[data-poster="drive"]').forEach((btn) => {
+    const id = getDriveId(btn.dataset.video || "");
+    const img = $("img", btn);
+    if (id && img) img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w1280`;
+  });
+
   // Aceita YouTube (inclusive Shorts), Vimeo, Google Drive ou arquivo de vídeo
   function toSource(url) {
     if (!url) return null;
@@ -431,11 +580,8 @@
         const id = parts.find((s) => /^\d+$/.test(s));
         if (id) return { type: "iframe", src: `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&dnt=1` };
       }
-      if (host === "drive.google.com") {
-        const i = parts.indexOf("d");
-        const id = i >= 0 ? parts[i + 1] : u.searchParams.get("id");
-        if (id) return { type: "iframe", src: `https://drive.google.com/file/d/${id}/preview` };
-      }
+      const driveId = getDriveId(url);
+      if (driveId) return { type: "iframe", src: `https://drive.google.com/file/d/${driveId}/preview` };
       if (/\.(mp4|webm|mov|m4v)$/i.test(u.pathname)) return { type: "video", src: u.href };
     } catch (err) {
       /* link inválido: cai na capa */
